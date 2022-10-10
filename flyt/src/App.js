@@ -2,16 +2,15 @@ import React from 'react';
 import Box from './components/Box';
 import Button from './components/Button';
 import ToggleBtn from './components/ToggleBtn';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
 import './App.css';
-
-const incrementPix = 10;
 
 const App = () => {
   const [boxes, setBoxes] = useState([]);
   const [selectedBox, setSelectedBox] = useState();
   const [toggle, setToggle] = useState(false);
+  const incrementPix = 10;
 
   const findMaxId = () => {
     if (boxes.length > 0) {
@@ -22,11 +21,10 @@ const App = () => {
   }
 
   function addBox() {
-    // box.left = ;
-    // box.top= ;
     const newBoxes = [...boxes, {
       id: findMaxId() + 1,
       top: 0,
+      left: 0,
     }]
 
     setBoxes(newBoxes);
@@ -36,23 +34,48 @@ const App = () => {
     setSelectedBox(id);
   }
 
-  const moveBox = useCallback((direction) => {
-    switch (direction) {
-      case 'up': setTop((top) => (top - incrementPix >= 0 ? top - incrementPix : 0))
-        break;
-      case 'down': setTop((top) => (top + incrementPix <= 470 ? top + incrementPix : 470))
-        break;
-      case 'left': setLeft((left) => (left - incrementPix >= 0 ? left - incrementPix : 0))
-        break;
-      case 'right': setLeft((left) => (left + incrementPix <= 470 ? left - incrementPix : 470))
-        break;
-      default: break;
-    }
-  }, []);
+  const moveBox = (dir) => {
+    const newBoxes = boxes.map(box => {
+      if (box.id === selectedBox) {
+        const newBox = { ...box };
+        switch (dir) {
+          case 'up': {
+            newBox.top = newBox.top - incrementPix >= 0 ? newBox.top - incrementPix : 0;
+            break;
+          }
+          case 'down': {
+            newBox.top = newBox.top + incrementPix <= 470 ? newBox.top + incrementPix : 470
+            break;
+          }
+          case 'left': {
+            newBox.left = newBox.left - incrementPix >= 0 ? newBox.left - incrementPix : 0
+            break;
+          }
+          case 'right': {
+            newBox.left = newBox.left + incrementPix <= 770 ? newBox.left + incrementPix : 770
+            break;
+          }
+          default: break;
+        }
 
-  const onKeyPress = useCallback((e) => {
-    // find the box object using id from selectedBox boxes.find
-    // add left and top attr 
+        return newBox;
+      }
+      return box
+    })
+
+    setBoxes(newBoxes);
+  }
+
+  function deleteBox() {
+    const newBoxes = boxes.filter(box =>
+      box.id !== selectedBox
+    )
+
+    setBoxes(newBoxes);
+  }
+
+  const onKeyPress = (e) => {
+    if (!toggle) return;
     switch (e.code) {
       case 'ArrowUp': moveBox('up');
         break;
@@ -62,34 +85,41 @@ const App = () => {
         break;
       case 'ArrowRight': moveBox('right');
         break;
+      case 'Delete': deleteBox();
+        break;
       default:
         break;
     }
-  }, [moveBox])
-
-  if (toggle) {
-    useEffect(() => {
-      document.addEventListener('keydown', onKeyPress);
-      return () => {
-        document.removeEventListener('keydown', onKeyPress);
-      }
-    })
   }
+
+  useEffect(() => {
+    document.addEventListener('keydown', onKeyPress);
+    return () => {
+      document.removeEventListener('keydown', onKeyPress);
+    }
+  }
+  )
 
   return (
     <div className='app' >
-      <div>
+      <div style={{ margin: `1px` }}>
         <Button onClick={addBox} />
         <ToggleBtn onClick={() => { setToggle(!toggle) }} />
       </div>
       <div className='container'>
-        {boxes.map((item, index) => (
+        {boxes.map((item) => (
           <Box
             onClick={(() => {
-              selectBox(item.id)
+              selectBox(item.id);
             })}
             key={item.id}
-            style={{ zIndex: item.id, top: index * incrementPix, left: index * incrementPix }}
+            text={item.id}
+            style={{
+              backgroundColor: selectedBox === item.id ? "red" : "aqua",
+              zIndex: item.id,
+              top: `${item.top}px`,
+              left: `${item.left}px`
+            }}
           />))}
       </div>
     </div>
