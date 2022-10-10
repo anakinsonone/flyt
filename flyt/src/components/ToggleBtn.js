@@ -3,7 +3,7 @@ import '../App.css';
 
 const ToggleBtn = (props) => {
     return (
-        <button className='button' onClick={props.onClick} >Toggle</button>
+        <button className='button' onClick={props.onClick} style={props.style} >Toggle</button>
     )
 }
 

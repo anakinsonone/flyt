@@ -104,7 +104,7 @@ const App = () => {
     <div className='app' >
       <div style={{ margin: `1px` }}>
         <Button onClick={addBox} />
-        <ToggleBtn onClick={() => { setToggle(!toggle) }} />
+        <ToggleBtn style={{ backgroundColor: toggle ? "#76b852" : "#DC281E" }} onClick={() => { setToggle(!toggle) }} />
       </div>
       <div className='container'>
         {boxes.map((item) => (
@@ -115,7 +115,7 @@ const App = () => {
             key={item.id}
             text={item.id}
             style={{
-              backgroundColor: selectedBox === item.id ? "red" : "aqua",
+              backgroundColor: selectedBox === item.id ? "#fe8c00" : "#38ef7d",
               zIndex: item.id,
               top: `${item.top}px`,
               left: `${item.left}px`
