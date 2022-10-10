@@ -2,4 +2,4 @@
 2. cd flyt
 3. npm start (enter)
 
-Select a box by clicking on it & usse Arrow Keys to move the boxes
+Select a box by clicking on it & use Arrow Keys to move the boxes
